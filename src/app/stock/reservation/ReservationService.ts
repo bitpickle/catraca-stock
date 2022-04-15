@@ -1,8 +1,8 @@
 import { ForbiddenException, GoneException, Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs'
-import * as timezone from 'dayjs/plugin/timezone';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Output } from '../output/Output';
 import { OutputService } from '../output/OutputService';
 import { ProductService } from '../product/ProductService';
@@ -23,6 +23,18 @@ export class ReservationService {
 
     private outputService: OutputService
   ) {}
+
+  @Cron(CronExpression.EVERY_30_MINUTES)
+  triggerCronJob(): void {
+    this.reservationRepository.find({
+        validUntil: LessThanOrEqual(dayjs().toDate())
+      }
+    ).then((reservationsFound)=>{
+      for(const r of reservationsFound){
+        this.remove(r.id);
+      }
+    });
+  }
 
   async create(data: CreateReservationDto): Promise<Reservation> {
     let valid = dayjs().add(data.timeInHours, 'h').toDate();
@@ -71,13 +83,7 @@ export class ReservationService {
   }
 
   async findOne(id: string): Promise<Reservation> {
-    let reservation = this.reservationRepository.findOne(id);
-    if(dayjs((await reservation).validUntil).toDate() <= dayjs().toDate()){
-      this.remove((await reservation).id);
-      throw new GoneException("This reservation has expired.");
-    }
-    
-    return reservation;
+    return this.reservationRepository.findOne(id);
   }
 
   findBy(criteria: any): Promise<Reservation[]> {
