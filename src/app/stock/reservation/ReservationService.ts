@@ -24,16 +24,12 @@ export class ReservationService {
     private outputService: OutputService
   ) {}
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
-  triggerCronJob(): void {
-    this.reservationRepository.find({
-        validUntil: LessThanOrEqual(dayjs().toDate())
-      }
-    ).then((reservationsFound)=>{
-      for(const r of reservationsFound){
-        this.remove(r.id);
-      }
-    });
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  deleteExpired(): void {
+
+    this.reservationRepository.delete({
+      validUntil: LessThanOrEqual(dayjs().toDate())
+    })
   }
 
   async create(data: CreateReservationDto): Promise<Reservation> {
