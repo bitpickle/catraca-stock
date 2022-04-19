@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 import { CreateOutputDto } from './OutputDto';
 import { OutputService } from './OutputService';
 
-
+@UseInterceptors(new TransformInterceptor())
 @Controller('output')
 export class OutputController {
   constructor(private readonly outputService: OutputService) {}

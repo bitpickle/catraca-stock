@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
+import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 import { Reservation } from './Reservation';
 import { CreateReservationDto } from './ReservationDto';
 import { ReservationService } from './ReservationService';
 
+@UseInterceptors(new TransformInterceptor())
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}

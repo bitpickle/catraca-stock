@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 import { Product } from './Product';
 import { CreateProductDto, UpdateProductDto } from './ProductDto';
 import { ProductService } from './ProductService';
 
+@UseInterceptors(new TransformInterceptor())
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
