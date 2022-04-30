@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductService } from '../product/ProductService';
 import { Entry } from './Entry';
 import { CreateEntryDto } from './EntryDto';
 import { EntryProduct } from './EntryProduct';
@@ -14,18 +13,16 @@ export class EntryService {
 
     @InjectRepository(EntryProduct)
     private entryProductRepository: Repository<EntryProduct>,
-
-    private productService: ProductService
   ) {}
 
   async create(data: CreateEntryDto): Promise<Entry>{
     return this.entryRepository.save({
       nf: data.nf
     }).then(async (e) => {
-      for (const p of data.products) {
+      for (const p of data.products ) {
           await this.entryProductRepository.save({
             amount: p.amount,
-            product: await this.productService.findOne(p.id),
+            sku: p.sku,
             entry: e
           })
       }

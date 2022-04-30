@@ -1,14 +1,16 @@
-import { ForbiddenException, GoneException, Injectable } from '@nestjs/common';
+import { TotalService } from './../total/TotalService';
+import { EntryService } from './../entry/EntryService';
+import { ForbiddenException, GoneException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs'
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { Output } from '../output/Output';
 import { OutputService } from '../output/OutputService';
-import { ProductService } from '../product/ProductService';
 import { Reservation } from './Reservation';
 import { CreateReservationDto } from './ReservationDto';
 import { ReservationProduct } from './ReservationProduct';
+import { Entry } from '../entry/Entry';
+import { Output } from './../output/Output';
 
 @Injectable()
 export class ReservationService {
@@ -19,9 +21,11 @@ export class ReservationService {
     @InjectRepository(ReservationProduct)
     private reservationProductRepository: Repository<ReservationProduct>,
 
-    private productService: ProductService,
+    @Inject(forwardRef(()=> OutputService))
+    private outputService: OutputService,
 
-    private outputService: OutputService
+    private totalService: TotalService
+
   ) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -32,6 +36,7 @@ export class ReservationService {
     })
   }
 
+
   async create(data: CreateReservationDto): Promise<Reservation> {
     let valid = dayjs().add(data.timeInHours, 'h').toDate();
     console.log(valid);
@@ -39,21 +44,20 @@ export class ReservationService {
       validUntil: valid
     }).then(async (r) => {
       for (const p of data.products) {
-          let product = await this.productService.findOne(p.id);
-
-          if(p.amount > product.total){
-            this.remove(r.id);
-            throw new ForbiddenException(product.name + " only has " + product.total + " remaining units in stock");
+          let total = await this.totalService.getTotal(p.sku);
+          if( p.amount > total){
+            this.remove( r.id );
+            throw new ForbiddenException(p.sku + " only has " + total + " remaining units in stock");
           }
 
-          if(product.total <= 0){
+          if(total <= 0){
             this.remove(r.id);
-            throw new ForbiddenException(product.name + " is out of stock");
+            throw new ForbiddenException(p.sku + " is out of stock");
           }
 
           await this.reservationProductRepository.save({
             amount: p.amount,
-            product: product,
+            sku: p.sku,
             reservation: r,
           })
       }
@@ -68,7 +72,7 @@ export class ReservationService {
       let outputs: Output[]= [];
       this.remove(r.id);
       for(const p of r.reservationProduct){
-        outputs.push(await this.outputService.create({amount: p.amount,product: p.product.id}));
+        outputs.push(await this.outputService.create({amount: p.amount,sku: p.sku}));
       }
       return outputs;
     });
