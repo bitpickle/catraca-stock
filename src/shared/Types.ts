@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsPositive, IsString } from "class-validator";
 
-export class CreateOutputDto {
+export class ProductType {
+
     @IsString()
     @IsNotEmpty()
     @ApiProperty()
@@ -11,4 +12,5 @@ export class CreateOutputDto {
     @IsNotEmpty()
     @ApiProperty()
     amount: number;
+
 }

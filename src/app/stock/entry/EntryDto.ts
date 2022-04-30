@@ -1,20 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNumber, IsNumberString } from "class-validator";
-
-class ProductType {
-
-    @ApiProperty()
-    sku: string;
-
-    @IsNumber()
-    @ApiProperty()
-    amount: number;
-
-}
+import { IsArray, IsNotEmpty, IsNumberString, IsPositive, IsString } from "class-validator";
+import { ProductType } from "src/shared/Types";
 
 export class CreateEntryDto {
 
     @IsNumberString()
+    @IsNotEmpty()
     @ApiProperty()
     nf: string;
 

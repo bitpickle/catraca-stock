@@ -6,12 +6,16 @@ export class EntryProduct {
     @PrimaryGeneratedColumn()
     public id?: number;
 
-    @Column()
-    public amount: number;
-
     @ManyToOne(() => Entry, entry => entry.entryProduct)
     public entry?: Entry;
 
-    @Column()
-    sku: string;
+    @Column({
+        nullable: false
+    })
+    public sku: string;
+
+    @Column({
+        nullable: false
+    })
+    public amount: number;
 }

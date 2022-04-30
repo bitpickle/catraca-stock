@@ -3,11 +3,13 @@ import { Column, Entity } from "typeorm"
 @Entity()
 export class Output extends _BaseEntity {
 
-    @Column()
+    @Column({
+        nullable: false
+    })
     sku: string
 
     @Column({
-        nullable: true
+        nullable: false
     })
     amount: number;
 

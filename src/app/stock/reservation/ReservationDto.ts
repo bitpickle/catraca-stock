@@ -1,17 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt } from "class-validator";
-
-class ProductType {
-    @ApiProperty()
-    sku: string;
-
-    @ApiProperty()
-    amount: number;
-}
+import { IsNotEmpty, IsPositive } from "class-validator";
+import { ProductType } from "src/shared/Types";
 
 export class CreateReservationDto {
 
-    @IsInt()
+    @IsPositive()
+    @IsNotEmpty()
     @ApiProperty()
     timeInHours: number;
 
