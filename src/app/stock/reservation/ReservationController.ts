@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
 import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 import { Reservation } from './Reservation';
-import { CreateReservationDto } from './ReservationDto';
+import { ConfirmReservationDto, CreateReservationDto } from './ReservationDto';
 import { ReservationService } from './ReservationService';
 
 @UseInterceptors(new TransformInterceptor())
@@ -14,9 +14,9 @@ export class ReservationController {
     return this.reservationService.create(data);
   }
 
-  @Post(':id')
-  confirm(@Param('id') id: string) {
-    return this.reservationService.confirm(id);
+  @Post('confirm')
+  confirm(@Body() data: ConfirmReservationDto) {
+    return this.reservationService.confirm(data.id);
   }
 
   @Get()
