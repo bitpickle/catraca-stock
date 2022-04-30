@@ -1,31 +1,34 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { TotalService } from './../total/TotalService';
+import { ReservationService } from './../reservation/ReservationService';
+import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductService } from '../product/ProductService';
 import { Output } from './Output';
 import { CreateOutputDto } from './OutputDto';
-
 @Injectable()
 export class OutputService {
   constructor(
     @InjectRepository(Output)
     private outputRepository: Repository<Output>,
-    private productService: ProductService
+
+    @Inject(forwardRef(()=> TotalService))
+    private totalService: TotalService
+
   ) {}
 
+  
   async create(data: CreateOutputDto): Promise<Output>{
-    let product = await this.productService.findOne(data.product);
-    
-    if(product.total <= 0){
-      throw new ForbiddenException(product.name + " is out of stock");
+    let total = await this.totalService.getTotal(data.sku)
+    if(total <= 0){
+      throw new ForbiddenException(data.sku + " is out of stock");
     }
 
-    if(data.amount > product.total){
-      throw new ForbiddenException(product.name + " only has " + product.total + " units remaining in stock");
+    if(data.amount > total){
+      throw new ForbiddenException(data.sku + " only has " + total + " units remaining in stock");
     }
 
     return this.outputRepository.save({
-      product: product,
+      sku: data.sku,
       amount: data.amount,
     });
   }

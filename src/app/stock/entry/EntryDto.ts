@@ -3,9 +3,8 @@ import { IsArray, IsNumber, IsNumberString, IsUUID } from "class-validator";
 
 class ProductType {
 
-    @IsUUID()
     @ApiProperty()
-    id: string;
+    sku: string;
 
     @IsNumber()
     @ApiProperty()

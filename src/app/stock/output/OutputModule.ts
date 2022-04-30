@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { TotalModule } from './../total/TotalModule';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductModule } from '../product/ProductModule';
 import { Output } from './Output';
 import { OutputController } from './OutputController';
 import { OutputService } from './OutputService';
@@ -8,7 +8,8 @@ import { OutputService } from './OutputService';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Output]),
-    ProductModule
+    forwardRef(()=> TotalModule),
+
   ],
   controllers: [OutputController],
   providers: [OutputService],

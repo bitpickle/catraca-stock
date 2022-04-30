@@ -1,5 +1,4 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Product } from "../product/Product";
 import { Entry } from "../entry/Entry";
 
 @Entity()
@@ -13,6 +12,6 @@ export class EntryProduct {
     @ManyToOne(() => Entry, entry => entry.entryProduct)
     public entry?: Entry;
 
-    @ManyToOne(() => Product, product => product.entryProduct, { eager:true })
-    public product!: Product;
+    @Column()
+    sku: string;
 }

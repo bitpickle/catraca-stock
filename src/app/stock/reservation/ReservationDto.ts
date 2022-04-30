@@ -3,7 +3,7 @@ import { IsInt } from "class-validator";
 
 class ProductType {
     @ApiProperty()
-    id: string;
+    sku: string;
 
     @ApiProperty()
     amount: number;

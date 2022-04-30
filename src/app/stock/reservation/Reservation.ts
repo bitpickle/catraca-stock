@@ -1,6 +1,5 @@
 import { _BaseEntity } from "src/shared/_BaseEntity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
-import { Product } from "../product/Product";
 import { ReservationProduct } from "./ReservationProduct";
 
 @Entity()

@@ -9,7 +9,7 @@ export class Entry extends _BaseEntity {
         nullable: false
     })
     nf: string;
-
+  
     @OneToMany(() => EntryProduct, entryProduct => entryProduct.entry, { eager: true })
     public entryProduct!: EntryProduct[];
 
