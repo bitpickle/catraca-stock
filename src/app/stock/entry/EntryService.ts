@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Entry } from './Entry';
@@ -35,8 +35,12 @@ export class EntryService {
     return this.entryRepository.find();
   }
 
-  findOne(id: string): Promise<Entry> {
-    return this.entryRepository.findOne(id);
+  async findOne(id: string): Promise<Entry> {
+    let oneEntry = await this.entryRepository.findOne(id);
+    if ( oneEntry == undefined) {
+      throw new NotFoundException("Entry not found");
+    }
+    return oneEntry;
   }
 
   findBy(criteria: any): Promise<Entry[]> {
