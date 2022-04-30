@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
 import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 import { CreateOutputDto } from './OutputDto';
 import { OutputService } from './OutputService';

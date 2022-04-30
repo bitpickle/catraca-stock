@@ -1,5 +1,5 @@
 import { TotalService } from './TotalService';
-import { Controller, Get, Post, Body,  Param, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { TransformInterceptor } from 'src/app/interceptors/TransformInterceptor';
 
 

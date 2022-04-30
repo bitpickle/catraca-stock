@@ -1,11 +1,9 @@
 import { EntryProduct } from './../entry/EntryProduct';
-import { EntryService } from './../entry/EntryService';
 import { OutputService } from './../output/OutputService';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReservationProduct } from '../reservation/ReservationProduct';
 import { Inject, forwardRef, Injectable } from '@nestjs/common';
-import { Entry } from '../entry/Entry';
 import { Output } from '../output/Output';
 
 @Injectable()
@@ -14,11 +12,11 @@ export class TotalService {
     @InjectRepository(ReservationProduct)
     private reservationProductRepository: Repository<ReservationProduct>,
 
-    @Inject(forwardRef(() => OutputService))
-    private outputService: OutputService,
-
     @InjectRepository(EntryProduct)
-    private entryProductRepository: Repository<EntryProduct>
+    private entryProductRepository: Repository<EntryProduct>,
+
+    @Inject(forwardRef(() => OutputService))
+    private outputService: OutputService
   ) { }
 
   async getTotal(sku: string) {

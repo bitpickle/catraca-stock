@@ -1,6 +1,5 @@
 import { EntryProduct } from './../entry/EntryProduct';
 import { TotalController } from './TotalController';
-import { EntryService } from './../entry/EntryService';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReservationProduct } from './../reservation/ReservationProduct';
 import { Reservation } from './../reservation/Reservation';

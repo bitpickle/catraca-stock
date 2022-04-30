@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, AfterLoad } from "typeorm";
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Reservation } from "../reservation/Reservation";
 
 @Entity()
@@ -13,5 +13,6 @@ export class ReservationProduct {
     public reservation?: Reservation;
 
     @Column()
-        public sku?: string;
+    public sku?: string;
+    
     }

@@ -1,15 +1,13 @@
 import { TotalService } from './../total/TotalService';
-import { EntryService } from './../entry/EntryService';
-import { ForbiddenException, GoneException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs'
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { OutputService } from '../output/OutputService';
 import { Reservation } from './Reservation';
 import { CreateReservationDto } from './ReservationDto';
 import { ReservationProduct } from './ReservationProduct';
-import { Entry } from '../entry/Entry';
 import { Output } from './../output/Output';
 
 @Injectable()
@@ -21,7 +19,6 @@ export class ReservationService {
     @InjectRepository(ReservationProduct)
     private reservationProductRepository: Repository<ReservationProduct>,
 
-    @Inject(forwardRef(()=> OutputService))
     private outputService: OutputService,
 
     private totalService: TotalService

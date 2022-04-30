@@ -1,5 +1,5 @@
 import { _BaseEntity } from "src/shared/_BaseEntity";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { ReservationProduct } from "./ReservationProduct";
 
 @Entity()
