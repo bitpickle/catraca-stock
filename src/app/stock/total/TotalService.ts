@@ -21,12 +21,11 @@ export class TotalService {
 
   async getTotal(sku: string) {
     let total: number = 0;
+    let totalReservations: number = 0;
 
-    let entries =
-      await this.entryProductRepository.find({ where: { sku: sku } });
+    let entries = await this.entryProductRepository.find({ where: { sku: sku } });
     let outputs: Output[] = await this.outputService.findBy({ where: { sku: sku } });
-    let reservations: ReservationProduct[] =
-      await this.reservationProductRepository.find({ where: { sku: sku } });
+    let reservations: ReservationProduct[] = await this.reservationProductRepository.find({ where: { sku: sku } });
 
     if (entries != undefined) {
       for (const p of entries) {
@@ -42,9 +41,10 @@ export class TotalService {
 
     if (reservations != undefined) {
       for (const p of reservations) {
+        totalReservations += p.amount;
         total -= p.amount;
       }
     }
-    return total;
+    return {total, totalReservations};
   }
 }

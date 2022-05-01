@@ -1,5 +1,5 @@
 import { TotalService } from './../total/TotalService';
-import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, forwardRef, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Output } from './Output';
@@ -17,7 +17,7 @@ export class OutputService {
 
   
   async create(data: CreateOutputDto): Promise<Output>{
-    let total = await this.totalService.getTotal(data.sku)
+    let {total} = await this.totalService.getTotal(data.sku);
     if(total <= 0){
       throw new ForbiddenException(data.sku + " is out of stock");
     }
@@ -36,8 +36,13 @@ export class OutputService {
     return this.outputRepository.find();
   }
 
-  findOne(id: string): Promise<Output> {
-    return this.outputRepository.findOne(id);
+  async findOne(id: string): Promise<Output> {
+    return this.outputRepository.findOneOrFail(id)
+    .then((output)=>{
+      return output;
+    }).catch(()=>{
+      throw new NotFoundException("Output not found!");
+    });
   }
 
   findBy(criteria: any): Promise<Output[]> {

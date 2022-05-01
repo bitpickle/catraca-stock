@@ -10,6 +10,6 @@ export class TotalController {
 
   @Get(':sku')
   async create(@Param('sku') sku: string) {
-    return {total: await this.totalService.getTotal(sku) };
+    return {sku, ...await this.totalService.getTotal(sku) };
   }
 }

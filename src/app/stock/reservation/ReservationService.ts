@@ -1,5 +1,5 @@
 import { TotalService } from './../total/TotalService';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs'
@@ -41,7 +41,7 @@ export class ReservationService {
       validUntil: valid
     }).then(async (r) => {
       for (const p of data.products) {
-          let total = await this.totalService.getTotal(p.sku);
+          let {total} = await this.totalService.getTotal(p.sku);
           if( p.amount > total){
             this.remove( r.id );
             throw new ForbiddenException(p.sku + " only has " + total + " remaining units in stock");
@@ -80,7 +80,12 @@ export class ReservationService {
   }
 
   async findOne(id: string): Promise<Reservation> {
-    return this.reservationRepository.findOne(id);
+    return this.reservationRepository.findOneOrFail(id)
+    .then((reservation)=>{
+      return reservation;
+    }).catch(()=>{
+      throw new NotFoundException("Reservation not found!");
+    });
   }
 
   findBy(criteria: any): Promise<Reservation[]> {
